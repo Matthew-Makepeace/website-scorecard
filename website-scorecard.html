@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website Scorecard for Renovators &amp; Builders | Makepeace Web Design</title>
+<meta name="description" content="Website Scorecard for Renovators &amp; Builders | Makepeace Web Design. A free 2-minute check: answer 7 quick questions to see if your website turns homeowners into quote requests.">
+<meta property="og:title" content="Website Scorecard for Renovators &amp; Builders | Makepeace Web Design">
+<meta property="og:description" content="Homeowners check your website before they call. Answer 7 quick questions to see if yours turns them into quote requests.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1120;
+    --navy-2: #131c33;
+    --navy-3: #1d2844;
+    --yellow: #F5C518;
+    --yellow-soft: #ffd24d;
+    --ink: #ffffff;
+    --muted: #a9b3c9;
+    --line: #2a3654;
+    --good: #4ade80;
+    --warn: #F5C518;
+    --bad: #f87171;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--navy);
+    color: var(--ink);
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+  }
+  h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
+  h1 { font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 700; }
+  h2 { font-size: clamp(1.4rem, 4.5vw, 1.8rem); font-weight: 600; }
+  h3 { font-size: 1.1rem; font-weight: 600; }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .screen.active { animation: none; } }
+
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; letter-spacing: .02em; font-size: .95rem;
+    margin-bottom: 40px; color: var(--ink); text-decoration: none;
+  }
+  .brand .logo { height: 30px; width: auto; flex: none; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--yellow); font-weight: 600; font-size: .85rem;
+    text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px;
+  }
+  .eyebrow svg { width: 18px; height: 18px; }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 34em; margin-bottom: 28px; }
+
+  .btn {
+    appearance: none; border: 0; cursor: pointer; font: inherit;
+    background: var(--yellow); color: var(--navy); font-weight: 600;
+    padding: 15px 26px; border-radius: 10px; font-size: 1.05rem;
+    min-height: 52px; transition: background .15s, transform .1s;
+  }
+  .btn:hover { background: var(--yellow-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible, .opt:focus-visible, .back:focus-visible, input:focus-visible {
+    outline: 3px solid var(--yellow); outline-offset: 2px;
+  }
+  .btn[disabled] { opacity: .6; cursor: wait; }
+  .btn-block { width: 100%; }
+  .intro-points { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 10px; color: var(--muted); font-size: .95rem; }
+  .intro-points li { display: flex; gap: 10px; align-items: center; }
+  .intro-points svg { width: 18px; height: 18px; color: var(--yellow); flex: none; }
+
+  /* Quiz */
+  .progress-wrap { margin-bottom: 28px; }
+  .progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: .9rem; color: var(--muted); }
+  .back {
+    appearance: none; background: none; border: 0; color: var(--muted); font: inherit; font-size: .9rem;
+    cursor: pointer; padding: 6px 0; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .back:hover { color: var(--ink); }
+  .back[hidden] { visibility: hidden; display: inline-flex; }
+  .bar { height: 6px; background: var(--navy-3); border-radius: 99px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--yellow); border-radius: 99px; transition: width .3s ease; }
+  .q-help { color: var(--muted); margin-bottom: 22px; }
+  .opts { display: grid; gap: 10px; }
+  .opts.grid-2 { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 480px) { .opts.grid-2 { grid-template-columns: 1fr; } }
+  .opt {
+    appearance: none; font: inherit; color: var(--ink); text-align: left; cursor: pointer;
+    background: var(--navy-2); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; min-height: 56px; font-size: 1.02rem; font-weight: 500;
+    display: flex; align-items: center; gap: 12px; transition: border-color .15s, background .15s;
+  }
+  .opt:hover { border-color: var(--yellow); background: var(--navy-3); }
+  .opt.selected { border-color: var(--yellow); background: rgba(245,197,24,.1); }
+  .opt .dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line); flex: none; }
+  .opt.selected .dot { border-color: var(--yellow); background: var(--yellow); box-shadow: inset 0 0 0 3px var(--navy-2); }
+  .opt .box { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--line); flex: none; display: grid; place-items: center; color: var(--navy); }
+  .opt .box svg { width: 14px; height: 14px; visibility: hidden; }
+  .opt.selected .box { border-color: var(--yellow); background: var(--yellow); }
+  .opt.selected .box svg { visibility: visible; }
+
+  /* Results */
+  .score-card {
+    background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px 22px; margin-bottom: 18px;
+  }
+  .score-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .score-num { font-size: 3.2rem; font-weight: 700; line-height: 1; }
+  .score-of { color: var(--muted); font-size: 1.1rem; }
+  .tier-tag { margin-left: auto; font-size: .82rem; font-weight: 600; padding: 5px 11px; border-radius: 99px; text-transform: uppercase; letter-spacing: .06em; }
+  .tier-good { background: rgba(74,222,128,.14); color: var(--good); }
+  .tier-mid { background: rgba(245,197,24,.14); color: var(--warn); }
+  .tier-low { background: rgba(248,113,113,.14); color: var(--bad); }
+  .segments { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 18px; }
+  .segments span { height: 10px; border-radius: 3px; background: var(--navy-3); }
+  .segments span.on { background: var(--yellow); }
+  .tier-msg { font-size: 1.12rem; margin: 0; }
+  .spotlight {
+    border-left: 3px solid var(--yellow); background: rgba(245,197,24,.06);
+    padding: 14px 16px; border-radius: 0 10px 10px 0; margin: 0 0 34px; color: var(--ink);
+  }
+  .section-label { font-size: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin: 0 0 14px; }
+  .fixes { display: grid; gap: 12px; margin-bottom: 40px; }
+  .fix {
+    display: grid; grid-template-columns: 44px 1fr; gap: 14px;
+    background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px;
+  }
+  .fix .icon {
+    width: 44px; height: 44px; border-radius: 10px; border: 1.5px solid var(--line);
+    display: grid; place-items: center; color: var(--yellow);
+  }
+  .fix .icon svg { width: 24px; height: 24px; }
+  .fix h3 { margin-bottom: 6px; }
+  .fix p { margin: 0; color: var(--muted); font-size: .97rem; }
+  .fix .unsure { display: inline-block; font-size: .78rem; font-weight: 600; color: var(--yellow); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .06em; }
+  .all-good { color: var(--muted); }
+
+  .audit {
+    background: var(--ink); color: var(--navy); border-radius: var(--radius); padding: 28px 22px;
+  }
+  .audit h2 { color: var(--navy); }
+  .audit .sub { color: #3b4560; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-weight: 600; font-size: .92rem; margin-bottom: 6px; }
+  .field label .opt-lbl { font-weight: 400; color: #6b7590; }
+  .field input {
+    width: 100%; font: inherit; font-size: 1rem; padding: 13px 14px; border-radius: 10px;
+    border: 1.5px solid #cdd3e0; background: #fff; color: var(--navy); min-height: 50px;
+  }
+  .field input:focus { border-color: var(--navy); }
+  .audit .btn { background: var(--navy); color: #fff; margin-top: 6px; }
+  .audit .btn:hover { background: var(--navy-3); }
+  .audit .btn:focus-visible { outline-color: var(--navy); }
+  .form-note { font-size: .85rem; color: #6b7590; margin: 12px 0 0; }
+  .form-error { color: #b42318; font-size: .92rem; margin: 10px 0 0; }
+  .thanks { text-align: left; }
+  .thanks .icon-big { width: 52px; height: 52px; border-radius: 12px; background: var(--yellow); color: var(--navy); display: grid; place-items: center; margin-bottom: 16px; }
+  .thanks .icon-big svg { width: 28px; height: 28px; }
+  .restart { margin-top: 24px; background: none; border: 0; color: var(--muted); font: inherit; text-decoration: underline; cursor: pointer; padding: 8px 0; }
+  .restart:hover { color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem;
+    text-align: center; padding: 22px 16px;
+  }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+</style>
+</head>
+<body>
+
+<!-- Line icons (building set) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-hammer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 6.5 4 17a1.8 1.8 0 0 0 2.5 2.5L17 9"/>
+      <path d="M12.5 4.5 15 2l7 7-2.5 2.5-2-2-1.5 1.5-4-4L13.5 5.5z"/>
+    </symbol>
+    <symbol id="i-house" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 11 12 4l9 7"/>
+      <path d="M5 9.5V20h14V9.5"/>
+      <path d="M10 20v-5.5h4V20"/>
+    </symbol>
+    <symbol id="i-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="8" width="19" height="8" rx="1.5"/>
+      <path d="M6.5 8v3M10 8v4.5M13.5 8v3M17 8v4.5"/>
+    </symbol>
+    <symbol id="i-hardhat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2.5 17.5h19v2h-19z"/>
+      <path d="M4.5 17.5V15a7.5 7.5 0 0 1 15 0v2.5"/>
+      <path d="M10 8V5.5h4V8"/>
+      <path d="M12 8v5"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m5 12.5 4.5 4.5L19 7.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main>
+  <a class="brand" href="https://matthewmakepeace.framer.website/" aria-label="Makepeace Web Design">
+    <svg class="logo" viewBox="0 0 166 82" aria-hidden="true">
+      <g stroke="#000" stroke-width="1" stroke-linejoin="round">
+        <path fill="#DFC41F" d="M1 1H20L25.5 40L31 1H51A22 24 0 0 1 53 49V35A9 10 0 0 0 53 15H50V81H38V25L25.5 48L13 25V81H1Z"/>
+        <path fill="#2A68B5" d="M76 1H88V46L100.5 34L113 46V1H125V81H106L100.5 62L95 81H76Z"/>
+        <path fill="#2A68B5" d="M127 1A38 40 0 0 1 127 81V72A29 31 0 0 0 127 10Z"/>
+      </g>
+    </svg>
+    Makepeace Web Design
+  </a>
+
+  <!-- Intro -->
+  <section class="screen active" id="screen-intro" aria-labelledby="intro-h">
+    <div class="eyebrow"><svg aria-hidden="true"><use href="#i-hardhat"/></svg>Free 2-minute check for renovators &amp; builders</div>
+    <h1 id="intro-h">Is your website winning you jobs?</h1>
+    <p class="lede">Homeowners check your website before they call. Answer 7 quick questions to see if yours turns them into quote requests.</p>
+    <button class="btn" id="start-btn" type="button">Start the check</button>
+    <ul class="intro-points">
+      <li><svg aria-hidden="true"><use href="#i-check"/></svg>No sign-up to see your score</li>
+      <li><svg aria-hidden="true"><use href="#i-check"/></svg>Built for renovators, contractors, builders and trades</li>
+      <li><svg aria-hidden="true"><use href="#i-check"/></svg>Get the top fixes for your website at the end</li>
+    </ul>
+  </section>
+
+  <!-- Questions -->
+  <section class="screen" id="screen-quiz" aria-live="polite">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <button class="back" id="back-btn" type="button" hidden>&larr; Back</button>
+        <span id="progress-label"></span>
+      </div>
+      <div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="8" id="progress-bar"><span id="progress-fill"></span></div>
+    </div>
+    <h2 id="q-text" tabindex="-1"></h2>
+    <p class="q-help" id="q-help"></p>
+    <div class="opts" id="q-opts" role="group" aria-labelledby="q-text"></div>
+    <button class="btn btn-block" id="continue-btn" type="button" hidden disabled style="margin-top:18px">Continue</button>
+  </section>
+
+  <!-- Results -->
+  <section class="screen" id="screen-results" aria-labelledby="res-h">
+    <h2 id="res-h" tabindex="-1" class="sr-only">Your website score</h2>
+    <div class="score-card">
+      <div class="score-row">
+        <span class="score-num" id="score-num">0</span>
+        <span class="score-of">out of 7</span>
+        <span class="tier-tag" id="tier-tag"></span>
+      </div>
+      <div class="segments" id="segments" aria-hidden="true"></div>
+      <p class="tier-msg" id="tier-msg"></p>
+    </div>
+    <p class="spotlight" id="spotlight"></p>
+
+    <p class="section-label" id="fixes-label">Your top fixes</p>
+    <div class="fixes" id="fixes"></div>
+
+    <div class="audit" id="audit">
+      <div id="audit-form-wrap">
+        <h2>Get your free personal audit</h2>
+        <p class="sub">I work with renovators and builders. I'll personally review your website and email you the top fixes to get more quote requests. No cost, no obligation.</p>
+        <form id="audit-form" novalidate>
+          <input type="hidden" name="type_of_work" id="f-work">
+          <input type="hidden" name="score" id="f-score">
+          <input type="hidden" name="answers" id="f-answers">
+          <input type="hidden" name="_subject" value="New Website Scorecard audit request">
+          <div class="field">
+            <label for="f-name">Your name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="f-biz">Business name</label>
+            <input id="f-biz" name="business_name" type="text" autocomplete="organization" required>
+          </div>
+          <div class="field">
+            <label for="f-url">Website URL</label>
+            <input id="f-url" name="website_url" type="text" inputmode="url" autocomplete="url" placeholder="yourcompany.ca" required>
+          </div>
+          <button class="btn btn-block" type="submit" id="submit-btn">Send me my free audit</button>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+          <p class="form-note">I'll only use your email to send your audit. No spam, no mailing list.</p>
+        </form>
+      </div>
+      <div class="thanks" id="thanks" hidden>
+        <div class="icon-big" aria-hidden="true"><svg><use href="#i-check"/></svg></div>
+        <h2 tabindex="-1" id="thanks-h">Got it, thanks!</h2>
+        <p class="sub">I'll go through your website myself and email you the top fixes within 2 business days.</p>
+      </div>
+    </div>
+    <button class="restart" type="button" id="restart-btn">Start the check again</button>
+  </section>
+</main>
+
+<footer>Makepeace Web Design · Websites for renovators &amp; builders</footer>
+
+<script>
+(function () {
+  // Where audit requests are sent. Paste your Formspree (or similar) endpoint here.
+  var FORM_ENDPOINT = 'https://formspree.io/f/xjywegkv';
+
+  var WORK_TYPES = [
+    { id: 'kitchens-bathrooms', label: 'Kitchens & bathrooms', priority: 4,
+      line: 'For kitchen and bathroom renovators, before & after photos are often what wins the job.' },
+    { id: 'basements', label: 'Basements', priority: 4,
+      line: 'For basement contractors, the project gallery is often what wins the job.' },
+    { id: 'general-contracting', label: 'General contracting', priority: 7,
+      line: 'For general contractors, reviews and proof of licensing and insurance are often what wins the job.' },
+    { id: 'decks-fences-landscaping', label: 'Decks, fences & landscaping', priority: 5,
+      line: 'For deck, fence and landscaping contractors, listing the neighbourhoods you work in is often what wins the job.' },
+    { id: 'roofing', label: 'Roofing', priority: 2,
+      line: 'For roofers, a tap-to-call number is often what wins the job. When a roof leaks, homeowners call the first contractor they can reach.' },
+    { id: 'hvac-plumbing-electrical', label: 'HVAC, plumbing or electrical', priority: 6,
+      line: 'For HVAC, plumbing and electrical trades, your Google Business Profile is often what wins the job. That’s where homeowners look when something breaks.' },
+    { id: 'other', label: 'Other', priority: 1,
+      line: 'For most renovators and builders, a quote button homeowners can’t miss is often what wins the job.' }
+  ];
+
+  var QUESTIONS = [
+    { id: 1, icon: 'i-hammer',
+      q: 'Can homeowners see a “Get a Free Quote” button on your homepage without scrolling?',
+      help: 'Check on your phone. It should be right at the top.',
+      fixTitle: 'Put a “Get a Free Quote” button up top',
+      fix: 'If homeowners have to hunt for how to reach you, many hit back and call the next contractor. Put one clear quote button at the top of every page, on phones too.' },
+    { id: 2, icon: 'i-hardhat',
+      q: 'On a phone, can homeowners tap your number to call you?',
+      help: 'Try it yourself: open your site on your phone and tap your phone number.',
+      fixTitle: 'Make your phone number tap-to-call',
+      fix: 'Most homeowners look you up on their phone. A number they have to copy and paste is a missed call. Make it tap-to-call in the header and footer.' },
+    { id: 3, icon: 'i-ruler',
+      q: 'Does your website have a quote form that asks about the project?',
+      help: 'For example: type of project, rough budget, timeline and postal code.',
+      fixTitle: 'Add a quote form that asks about the project',
+      fix: 'Homeowners browsing at 10pm can’t call you. A quote form lets them request one anyway, and it’s waiting for you in the morning. Ask about the project, budget, timeline and postal code so you call back the right jobs first.' },
+    { id: 4, icon: 'i-house',
+      q: 'Do you show before & after photos of your real projects?',
+      help: 'On your website itself, not just on Instagram or Facebook.',
+      fixTitle: 'Show before & after photos of your projects',
+      fix: 'Homeowners hire on proof. Your best work buried on Instagram doesn’t help your website win the job. Add a project gallery sorted by type of work, with before & after shots.' },
+    { id: 5, icon: 'i-house',
+      q: 'Does your website list the towns and neighbourhoods you work in?',
+      help: 'By name, like “Etobicoke, Mississauga, Oakville.”',
+      fixTitle: 'List the areas you work in by name',
+      fix: 'Google needs to know where you work to show you when a homeowner searches “basement renovation Etobicoke.” List your service areas by name and give each main service its own page.' },
+    { id: 6, icon: 'i-ruler',
+      q: 'Do you have a Google Business Profile that links to your website?',
+      help: 'That’s your listing on Google Maps, with your hours, photos and reviews.',
+      fixTitle: 'Set up your Google Business Profile',
+      fix: 'Your Google profile shows up on the map, often before any website. Claim it, add photos from the job site, reply to every review, and link it to your website.' },
+    { id: 7, icon: 'i-hardhat',
+      q: 'Are your reviews, years in business, and licensing or insurance shown on your homepage?',
+      help: 'The things that tell a homeowner they can trust you in their house.',
+      fixTitle: 'Show reviews and proof you’re legit',
+      fix: 'A renovation is a big, stressful decision. Homeowners want proof you’re the real deal before they reach out. Show 3 to 5 real reviews, years in business, and your licensing, insurance and warranty details.' }
+  ];
+
+  var ANSWERS = [
+    { v: 'yes', label: 'Yes' },
+    { v: 'unsure', label: 'Not sure' },
+    { v: 'no', label: 'No' }
+  ];
+
+  var state = { step: 0, work: [], answers: {} }; // work = ids in the order they were tapped // step 0 = work type, 1..7 = questions
+  var TOTAL = QUESTIONS.length + 1;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function show(id) {
+    ['screen-intro', 'screen-quiz', 'screen-results'].forEach(function (s) {
+      $(s).classList.toggle('active', s === id);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function renderStep() {
+    var opts = $('q-opts');
+    opts.innerHTML = '';
+    $('back-btn').hidden = state.step === 0;
+    $('progress-label').textContent = state.step === 0 ? 'Before we start' : 'Question ' + state.step + ' of ' + QUESTIONS.length;
+    $('progress-fill').style.width = (state.step / TOTAL * 100) + '%';
+    $('progress-bar').setAttribute('aria-valuenow', state.step);
+
+    var cont = $('continue-btn');
+    cont.hidden = state.step !== 0;
+    if (state.step === 0) {
+      $('q-text').textContent = 'What type of work do you do?';
+      $('q-help').textContent = 'Pick all that apply.';
+      opts.className = 'opts grid-2';
+      WORK_TYPES.forEach(function (w) {
+        opts.appendChild(makeCheck(w.label, state.work.indexOf(w.id) !== -1, function (on) {
+          state.work = state.work.filter(function (id) { return id !== w.id; });
+          if (on) state.work.push(w.id);
+          cont.disabled = !state.work.length;
+        }));
+      });
+      cont.disabled = !state.work.length;
+    } else {
+      var q = QUESTIONS[state.step - 1];
+      $('q-text').textContent = q.q;
+      $('q-help').textContent = q.help;
+      opts.className = 'opts';
+      ANSWERS.forEach(function (a) {
+        opts.appendChild(makeOpt(a.label, state.answers[q.id] === a.v, function () {
+          state.answers[q.id] = a.v; next();
+        }));
+      });
+    }
+    $('q-text').focus({ preventScroll: true });
+  }
+
+  function makeOpt(label, selected, onClick) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt' + (selected ? ' selected' : '');
+    b.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    var dot = document.createElement('span'); dot.className = 'dot'; dot.setAttribute('aria-hidden', 'true');
+    var t = document.createElement('span'); t.textContent = label;
+    b.appendChild(dot); b.appendChild(t);
+    b.addEventListener('click', function () {
+      Array.prototype.forEach.call(b.parentNode.children, function (c) { c.classList.remove('selected'); });
+      b.classList.add('selected');
+      setTimeout(onClick, 160);
+    });
+    return b;
+  }
+
+  function makeCheck(label, selected, onToggle) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt' + (selected ? ' selected' : '');
+    b.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    var box = document.createElement('span'); box.className = 'box'; box.setAttribute('aria-hidden', 'true');
+    box.innerHTML = '<svg><use href="#i-check"/></svg>';
+    var t = document.createElement('span'); t.textContent = label;
+    b.appendChild(box); b.appendChild(t);
+    b.addEventListener('click', function () {
+      var on = !b.classList.contains('selected');
+      b.classList.toggle('selected', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      onToggle(on);
+    });
+    return b;
+  }
+
+  function next() {
+    if (state.step < QUESTIONS.length) { state.step++; renderStep(); }
+    else { renderResults(); show('screen-results'); $('res-h').focus({ preventScroll: true }); }
+  }
+
+  // Selected work types, in the order they were tapped (falls back to "Other").
+  function workTypes() {
+    var picked = state.work.map(function (id) {
+      return WORK_TYPES.filter(function (w) { return w.id === id; })[0];
+    }).filter(Boolean);
+    return picked.length ? picked : [WORK_TYPES[WORK_TYPES.length - 1]];
+  }
+
+  function iconSvg(id) {
+    return '<svg aria-hidden="true"><use href="#' + id + '"/></svg>';
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  }
+
+  function renderResults() {
+    var score = QUESTIONS.filter(function (q) { return state.answers[q.id] === 'yes'; }).length;
+    var types = workTypes();
+    var w = types[0]; // first one tapped drives the personalized line
+    // Priority fixes for every selected type, in tap order, with no repeats
+    var priorities = [];
+    types.forEach(function (t) { if (priorities.indexOf(t.priority) === -1) priorities.push(t.priority); });
+    var rank = function (id) { var i = priorities.indexOf(id); return i === -1 ? 99 : i; };
+
+    $('score-num').textContent = score;
+    var seg = $('segments'); seg.innerHTML = '';
+    for (var i = 0; i < 7; i++) { var s = document.createElement('span'); if (i < score) s.className = 'on'; seg.appendChild(s); }
+
+    var tag = $('tier-tag'), msg = $('tier-msg');
+    if (score >= 6) {
+      tag.textContent = 'Solid'; tag.className = 'tier-tag tier-good';
+      msg.textContent = 'Your website is already helping you win jobs. A personal audit can find the small fixes that bring in even more quote requests.';
+    } else if (score >= 3) {
+      tag.textContent = 'Room to improve'; tag.className = 'tier-tag tier-mid';
+      msg.textContent = 'You’re leaving jobs on the table. Homeowners are finding you, but some of them are calling another contractor instead. Start with the fixes below.';
+    } else {
+      tag.textContent = 'Losing jobs'; tag.className = 'tier-tag tier-low';
+      msg.textContent = 'You’re likely losing jobs to contractors with better websites. A personal audit will show you exactly where.';
+    }
+
+    $('spotlight').textContent = w.line;
+
+    // Fixes for anything not a "yes". The fixes that matter most for their types of work go first.
+    var missed = QUESTIONS.filter(function (q) { return state.answers[q.id] !== 'yes'; });
+    missed.sort(function (a, b) { return rank(a.id) - rank(b.id) || a.id - b.id; });
+
+    var fixes = $('fixes'); fixes.innerHTML = '';
+    if (!missed.length) {
+      $('fixes-label').textContent = 'Your top fixes';
+      fixes.innerHTML = '<p class="all-good">You ticked every box. Nice work. The next step is getting more homeowners to your website, and an audit can show you how.</p>';
+    } else {
+      $('fixes-label').textContent = missed.length === 1 ? 'Your top fix' : 'Your top ' + missed.length + ' fixes';
+      missed.forEach(function (q) {
+        var el = document.createElement('div');
+        el.className = 'fix';
+        el.innerHTML = '<div class="icon">' + iconSvg(q.icon) + '</div><div>' +
+          (state.answers[q.id] === 'unsure' ? '<span class="unsure">Worth checking</span>' : '') +
+          '<h3>' + esc(q.fixTitle) + '</h3><p>' + esc(q.fix) + '</p></div>';
+        fixes.appendChild(el);
+      });
+    }
+
+    // Hidden fields for the audit request
+    $('f-work').value = types.map(function (t) { return t.label; }).join(', ');
+    $('f-score').value = score + '/7';
+    $('f-answers').value = QUESTIONS.map(function (q) {
+      var a = state.answers[q.id];
+      return q.id + '. ' + q.fixTitle + ': ' + (a === 'yes' ? 'Yes' : a === 'unsure' ? 'Not sure' : 'No');
+    }).join('\n');
+  }
+
+  $('start-btn').addEventListener('click', function () { state.step = 0; show('screen-quiz'); renderStep(); });
+  $('continue-btn').addEventListener('click', function () { if (state.work.length) next(); });
+  $('back-btn').addEventListener('click', function () { if (state.step > 0) { state.step--; renderStep(); } });
+  $('restart-btn').addEventListener('click', function () {
+    state = { step: 0, work: [], answers: {} };
+    $('audit-form').reset();
+    $('audit-form-wrap').hidden = false; $('thanks').hidden = true;
+    show('screen-intro');
+  });
+
+  $('audit-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('form-error'); err.hidden = true;
+    var form = e.target;
+    var missing = ['f-name', 'f-email', 'f-biz', 'f-url'].filter(function (id) { return !$(id).value.trim(); });
+    if (missing.length) { err.textContent = 'Please fill in all four fields so I can review your website.'; err.hidden = false; $(missing[0]).focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('f-email').value.trim())) { err.textContent = 'That email doesn’t look quite right. Mind checking it?'; err.hidden = false; $('f-email').focus(); return; }
+
+    if (FORM_ENDPOINT.indexOf('YOUR_FORM_ID') !== -1) {
+      err.textContent = 'This form isn’t connected yet. Set FORM_ENDPOINT in the page script.';
+      err.hidden = false;
+      console.warn('Website Scorecard: FORM_ENDPOINT not set. Submission data:', Object.fromEntries(new FormData(form)));
+      return;
+    }
+
+    var btn = $('submit-btn'); btn.disabled = true; btn.textContent = 'Sending…';
+    fetch(FORM_ENDPOINT, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); })
+      .then(function () {
+        $('audit-form-wrap').hidden = true; $('thanks').hidden = false; $('thanks-h').focus();
+      })
+      .catch(function () {
+        err.textContent = 'Something went wrong sending that. Please try again in a moment.';
+        err.hidden = false;
+      })
+      .then(function () { btn.disabled = false; btn.textContent = 'Send me my free audit'; });
+  });
+})();
+</script>
+</body>
+</html>
