@@ -59,7 +59,7 @@ To send submissions somewhere else, replace this with another Formspree endpoint
 Choose one:
 
 - **Framer:** add a page such as `/scorecard`, drop in an **Embed** element, and paste in the contents of `website-scorecard.html`.
-- **GitHub Pages:** in this repository go to **Settings → Pages**, choose the `main` branch, and save. The page will be at `https://matthew-makepeace.github.io/website-scorecard/website-scorecard.html`. Rename the file to `index.html` if you want the shorter `/website-scorecard/` address.
+- **GitHub Pages (live now):** <https://matthew-makepeace.github.io/website-scorecard/>. This short address goes through `index.html`, which sends visitors straight to `website-scorecard.html`, so both addresses work. Pages publishes from the `main` branch (**Settings → Pages**) and updates a minute or two after each push.
 
 After it's live, send one test submission and confirm the form in the email Formspree sends the first time.
 
